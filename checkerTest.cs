@@ -4,154 +4,24 @@ namespace SimpleMonitor.Test
 {
     public class CheckerTest
     {
-        [Fact]
-        public void AllVitalsWithinRangeTest()
+        [Theory]
+        [InlineData(98.6f, 75, 95, true)]  // All vitals within range
+        [InlineData(103.0f, 75, 95, false)] // Temperature out of range
+        [InlineData(98.6f, 120, 95, false)] // Pulse rate out of range
+        [InlineData(98.6f, 75, 85, false)]  // SPO2 out of range
+        [InlineData(104.0f, 120, 85, false)] // Multiple vitals out of range
+        [InlineData(95.0f, 75, 95, true)]   // Temperature lower boundary
+        [InlineData(102.0f, 75, 95, true)]  // Temperature upper boundary
+        [InlineData(98.6f, 60, 95, true)]   // Pulse rate lower boundary
+        [InlineData(98.6f, 100, 95, true)]  // Pulse rate upper boundary
+        [InlineData(98.6f, 75, 90, true)]   // SPO2 lower boundary
+        public void VitalsOkTest(float temperature, int pulseRate, int spo2, bool expectedResult)
         {
-            // Arrange
-            float temperature = 98.6f;
-            int pulseRate = 75;
-            int spo2 = 95;
-
             // Act
             bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
 
             // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void TemperatureOutOfRangeTest()
-        {
-            // Arrange
-            float temperature = 103.0f; // Out of range
-            int pulseRate = 75;
-            int spo2 = 95;
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void PulseRateOutOfRangeTest()
-        {
-            // Arrange
-            float temperature = 98.6f;
-            int pulseRate = 120; // Out of range
-            int spo2 = 95;
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void Spo2OutOfRangeTest()
-        {
-            // Arrange
-            float temperature = 98.6f;
-            int pulseRate = 75;
-            int spo2 = 85; // Out of range
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void MultipleVitalsOutOfRangeTest()
-        {
-            // Arrange
-            float temperature = 104.0f; // Out of range
-            int pulseRate = 120; // Out of range
-            int spo2 = 85; // Out of range
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void TemperatureLowerBoundaryTest()
-        {
-            // Arrange
-            float temperature = 95.0f; // Lower boundary
-            int pulseRate = 75;
-            int spo2 = 95;
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void TemperatureUpperBoundaryTest()
-        {
-            // Arrange
-            float temperature = 102.0f; // Upper boundary
-            int pulseRate = 75;
-            int spo2 = 95;
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void PulseRateLowerBoundaryTest()
-        {
-            // Arrange
-            float temperature = 98.6f;
-            int pulseRate = 60; // Lower boundary
-            int spo2 = 95;
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void PulseRateUpperBoundaryTest()
-        {
-            // Arrange
-            float temperature = 98.6f;
-            int pulseRate = 100; // Upper boundary
-            int spo2 = 95;
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void Spo2LowerBoundaryTest()
-        {
-            // Arrange
-            float temperature = 98.6f;
-            int pulseRate = 75;
-            int spo2 = 90; // Lower boundary
-
-            // Act
-            bool result = Checker.VitalsOk(temperature, pulseRate, spo2);
-
-            // Assert
-            Assert.True(result);
+            Assert.Equal(expectedResult, result);
         }
     }
 }
