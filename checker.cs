@@ -1,48 +1,39 @@
-﻿using System;
-using System.Diagnostics;
+﻿using Vitals;
 
-class Checker
+namespace SimpleMonitor
 {
-    public static bool VitalsOk(float temperature, int pulseRate, int spo2)
+    // Checker class
+    class Checker
     {
-        if(temperature >102 || temperature < 95)
+        public static bool VitalsOk(float temperature, int pulseRate, int spo2)
         {
-            Console.WriteLine("Temperature critical!");
+            var vitals = VitalFactory.CreateVitals(temperature, pulseRate, spo2);
+
+            foreach (var vital in vitals)
+            {
+                if (!vital.IsOk())
+                {
+                    DisplayAlert(vital.GetAlertMessage());
+                    return false;
+                }
+            }
+
+            Console.WriteLine("Vitals received within normal range");
+            Console.WriteLine("Temperature: {0} Pulse: {1}, SO2: {2}", temperature, pulseRate, spo2);
+            return true;
+        }
+
+        public static void DisplayAlert(string message)
+        {
+            Console.WriteLine(message);
             for (int i = 0; i < 6; i++)
             {
                 Console.Write("\r* ");
-                System.Threading.Thread.Sleep(1000);
+                Thread.Sleep(1000);
                 Console.Write("\r *");
-                System.Threading.Thread.Sleep(1000);
+                Thread.Sleep(1000);
             }
-            return false;
         }
-        else if (pulseRate < 60 || pulseRate > 100)
-        {
-            Console.WriteLine("Pulse Rate is out of range!");
-            for (int i = 0; i < 6; i++)
-            {
-                Console.Write("\r* ");
-                System.Threading.Thread.Sleep(1000);
-                Console.Write("\r *");
-                System.Threading.Thread.Sleep(1000);
-            }
-            return false;
-        }
-        else if (spo2 < 90)
-        {
-            Console.WriteLine("Oxygen Saturation out of range!");
-            for (int i = 0; i < 6; i++)
-            {
-                Console.Write("\r* ");
-                System.Threading.Thread.Sleep(1000);
-                Console.Write("\r *");
-                System.Threading.Thread.Sleep(1000);
-            }
-            return false;
-        }
-        Console.WriteLine("Vitals received within normal range");
-        Console.WriteLine("Temperature: {0} Pulse: {1}, SO2: {2}", temperature, pulseRate, spo2);
-        return true;
     }
 }
+
